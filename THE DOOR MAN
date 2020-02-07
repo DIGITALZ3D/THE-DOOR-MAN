@@ -1,0 +1,116 @@
+#include <Servo.h>
+const int servo_Pin_parpados = 3;
+const int servo_Pin_ojos_derecha_X = 7;
+const int servo_Pin_ojos_izquierda_X = 5;
+const int servo_Pin_ojos_derecha_Y = 10;
+const int servo_Pin_ojos_izquierda_Y = 9;
+
+Servo servo_parpados;
+Servo servo_derecha_ojosY;
+Servo servo_izquierda_ojosY;
+Servo servo_derecha_ojosX;
+Servo servo_izquierda_ojosX;
+
+
+const int inputPinPIR = 12;
+
+
+const int pinLED = 13;
+
+
+int statePIR = LOW;
+
+int leer_inicio_PIR = 0; 
+
+void setup() {
+  
+  pinMode(inputPinPIR, INPUT);
+ 
+  pinMode(pinLED, OUTPUT);
+  
+ 
+  servo_parpados.attach(servo_Pin_parpados);
+  servo_derecha_ojosX.attach(servo_Pin_ojos_derecha_X);
+  servo_izquierda_ojosX.attach(servo_Pin_ojos_izquierda_X);
+  servo_derecha_ojosY.attach(servo_Pin_ojos_derecha_Y);
+  servo_izquierda_ojosY.attach(servo_Pin_ojos_izquierda_Y);
+
+  servo_parpados.write(160);
+  servo_derecha_ojosX.write(15);
+  servo_izquierda_ojosX.write(15);
+  servo_derecha_ojosY.write(5);
+  servo_izquierda_ojosY.write(107);
+
+ 
+  Serial.begin(9600);
+  Serial.println("Start");
+}
+void loop() {
+
+  leer_inicio_PIR = digitalRead(inputPinPIR);
+  if (leer_inicio_PIR == HIGH) { 
+    digitalWrite(pinLED, HIGH);
+    if (statePIR == LOW) { 
+    
+      abrir_ojos();
+      delay(3000);
+      girar_ojos_izquiersa();
+      delay(3000);
+     girar_ojos_derecha();
+     delay(3000);
+     girar_ojo_diagonal_derecha();
+     delay(3000);
+     girar_ojo_diagonal_izquieda();
+     delay(3000);
+    posicion_inicial();
+    delay(3000);
+    cerrar_ojos();
+    delay(3000);
+
+      statePIR = HIGH;
+    }
+  } else {
+    if(statePIR == HIGH) {
+      delay(3000);
+ 
+      digitalWrite(pinLED, LOW);
+      cerrar_ojos();
+      delay(1000);   
+      statePIR = LOW; 
+      
+    }
+  }
+}
+
+void abrir_ojos() {
+  servo_parpados.write(180);
+}
+void cerrar_ojos() {
+  servo_parpados.write(80);
+}
+void girar_ojos_izquiersa() {
+  servo_derecha_ojosX.write(120);
+  servo_izquierda_ojosX.write(120);
+}
+void girar_ojos_derecha() {
+  servo_derecha_ojosX.write(20);
+  servo_izquierda_ojosX.write(20);
+}
+void girar_ojo_diagonal_derecha() {
+ servo_derecha_ojosX.write(20);
+  servo_izquierda_ojosX.write(20);
+ servo_derecha_ojosY.write(90);
+  servo_izquierda_ojosY.write(90);  
+}
+void girar_ojo_diagonal_izquieda() {
+ servo_derecha_ojosX.write(120);
+  servo_izquierda_ojosX.write(120);
+ servo_derecha_ojosY.write(90);
+  servo_izquierda_ojosY.write(90);  
+}
+void posicion_inicial() {
+  servo_derecha_ojosX.write(45);
+  servo_izquierda_ojosX.write(45);
+  servo_derecha_ojosY.write(45);
+  servo_izquierda_ojosY.write(45);
+}
